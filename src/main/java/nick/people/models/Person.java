@@ -22,33 +22,36 @@ public class Person {
     @Column(name = "name")
     private String name;
 
-    @Min(value = 0, message = "Age should be greater than 0")
-    @Column(name = "age")
-    private int age;
-
-    @Column(name = "email")
-    @NotEmpty(message = "Email should not be empty")
-    @Email
-    private String email;
+    @Min(value = 1900, message = "Year should be greater than 1900, dont lie!")
+    @Column(name = "year_of_birth")
+    private int yearOfBirth;
 
     @OneToMany(mappedBy = "owner")
-    private List<Item> items;
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
+    private List<Book> books;
 
     public Person() {
 
     }
 
-    public Person(String name, int age) {
+    public Person(String name, int yearOfBirth) {
         this.name = name;
-        this.age = age;
+        this.yearOfBirth = yearOfBirth;
+    }
+
+    public int getYearOfBirth() {
+        return yearOfBirth;
+    }
+
+    public void setYearOfBirth(int yearOfBirth) {
+        this.yearOfBirth = yearOfBirth;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     public int getId() {
@@ -67,28 +70,12 @@ public class Person {
         this.name = name;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     @Override
     public String toString() {
         return "Person{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", age=" + age +
+                ", yearOfBirth=" + yearOfBirth +
                 '}';
     }
 
@@ -98,13 +85,12 @@ public class Person {
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
         return id == person.id &&
-                age == person.age &&
-                Objects.equals(name, person.name) &&
-                Objects.equals(email, person.email);
+                yearOfBirth == person.yearOfBirth &&
+                Objects.equals(name, person.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age, email);
+        return Objects.hash(id, name, yearOfBirth);
     }
 }

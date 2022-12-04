@@ -4,8 +4,9 @@ package nick.people.controllers;
 
 import nick.people.dao.PersonDao;
 import nick.people.models.Person;
-import nick.people.services.ItemService;
+import nick.people.services.BookService;
 import nick.people.services.PeopleService;
+import nick.people.util.PersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,29 +20,29 @@ import javax.validation.Valid;
 public class PeopleController {
 
     private final PeopleService peopleService;
-    private final ItemService itemService;
+    private final BookService bookService;
     private final PersonDao personDao;
+    private final PersonValidator personValidator;
 
     @Autowired
-    public PeopleController(PeopleService peopleService, ItemService itemService, PersonDao personDao) {
+    public PeopleController(PeopleService peopleService, BookService bookService, PersonDao personDao, PersonValidator personValidator) {
         this.peopleService = peopleService;
-        this.itemService = itemService;
+        this.bookService = bookService;
         this.personDao = personDao;
+        this.personValidator = personValidator;
     }
 
     @GetMapping()
     public String index(Model model) {
-//        model.addAttribute("people", peopleService.findAll());
-        personDao.testNPlus1();
-//        itemService.findByItemName("Airpods");
-//        itemService.findByOwner(peopleService.findAll().get(0));
-//        peopleService.test();
+        model.addAttribute("people", peopleService.findAll());
         return "people/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
         model.addAttribute("person", peopleService.findOne(id));
+        model.addAttribute("books", peopleService.getBooksByPersonId(id));
+
         return "people/show";
     }
 
@@ -53,6 +54,8 @@ public class PeopleController {
     @PostMapping()
     public String create(@ModelAttribute("person") @Valid Person person,
                          BindingResult bindingResult) {
+        personValidator.validate(person, bindingResult);
+
         if (bindingResult.hasErrors())
             return "people/new";
 
@@ -81,5 +84,4 @@ public class PeopleController {
         peopleService.delete(id);
         return "redirect:/people";
     }
-
 }
