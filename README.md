@@ -1,1 +1,1 @@
-код бд в ресурсах, сделано на jdbc template + spring mvc
+spring mvc,data jpa, thymeleaf
